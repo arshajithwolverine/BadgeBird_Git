@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Welcome to Firebase Hosting</title>
+
+  <!-- update the version number as needed -->
+  <script defer src="/__/firebase/7.23.0/firebase-app.js"></script>
+  <!-- include only the Firebase features as you need -->
+  <script defer src="/__/firebase/7.23.0/firebase-auth.js"></script>
+  <script defer src="/__/firebase/7.23.0/firebase-database.js"></script>
+  <script defer src="/__/firebase/7.23.0/firebase-messaging.js"></script>
+  <script defer src="/__/firebase/7.23.0/firebase-storage.js"></script>
+  <!-- initialize the SDK after all desired features are loaded -->
+  <script defer src="/__/firebase/init.js"></script>
+
+  <style media="screen">
+    body {
+      background: #ECEFF1;
+      color: rgba(0, 0, 0, 0.87);
+      font-family: Roboto, Helvetica, Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    #message {
+      background: white;
+      max-width: 360px;
+      margin: 100px auto 16px;
+      padding: 32px 24px;
+      border-radius: 3px;
+    }
+
+    #message h2 {
+      color: #ffa100;
+      font-weight: bold;
+      font-size: 16px;
+      margin: 0 0 8px;
+    }
+
+    #message h1 {
+      font-size: 22px;
+      font-weight: 300;
+      color: rgba(0, 0, 0, 0.6);
+      margin: 0 0 16px;
+    }
+
+    #message p {
+      line-height: 140%;
+      margin: 16px 0 24px;
+      font-size: 14px;
+    }
+
+    #message a {
+      display: block;
+      text-align: center;
+      background: #039be5;
+      text-transform: uppercase;
+      text-decoration: none;
+      color: white;
+      padding: 16px;
+      border-radius: 4px;
+    }
+
+    #message,
+    #message a {
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+    }
+
+    #load {
+      color: rgba(0, 0, 0, 0.4);
+      text-align: center;
+      font-size: 13px;
+    }
+
+    @media (max-width: 600px) {
+
+      body,
+      #message {
+        margin-top: 0;
+        background: white;
+        box-shadow: none;
+      }
+
+      body {
+        border-top: 16px solid #ffa100;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div id="message">
+    
+    <input type="button" value="Google" onclick=googleAuth() ><br>
+    <input type="button" value="FaceBook" onclick=facebookAuth() ><br>
+    <input type="button" value="GitHub" onclick=githubAuth() ><br>
+    <input type="button" value="Twitter" onclick=twitterAuth() ><br>
+    <input type="button" value="Yahoo" onclick=yahooAuth() ><br>
+    Email : <input type="text" id="lemail"><br>
+    Password : <input type="password" id="lpassword">
+    <input type="button" value="Sign In" onclick=EmailLogin()>
+    <hr >
+    Email : <input type="text" id="email"><br>
+    Password : <input type="password" id="password">
+    <input type="button" value="Sign Up" onclick=EmailSignUp()>
+  </div>
+ 
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      // // 🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥
+      // // The Firebase SDK is initialized and available here!
+      //
+      // firebase.auth().onAuthStateChanged(user => { });
+      // firebase.database().ref('/path/to/ref').on('value', snapshot => { });
+      // firebase.messaging().requestPermission().then(() => { });
+      // firebase.storage().ref('/path/to/ref').getDownloadURL().then(() => { });
+      //
+      // // 🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥
+
+      try {
+        let app = firebase.app();
+        let features = ['auth', 'database', 'messaging', 'storage'].filter(feature => typeof app[feature] === 'function');
+     
+
+        // firebase.auth().onAuthStateChanged(function (user) {
+        //   if (user) {
+        //     user.getIdToken(/* forceRefresh */ true).then(function (idToken) {
+        //       console.log(idToken);
+        //       // ...
+        //     }).catch(function (error) {
+        //       // Handle error
+        //     });
+        //   } else {
+        //     console.log('test');
+        //   }
+        // });
+
+
+
+
+
+
+      } catch (e) {
+        console.error(e);
+      }
+    });
+
+//yahoo
+function yahooAuth() {
+  var provider = new firebase.auth.OAuthProvider('yahoo.com');
+  firebase.auth().signInWithPopup(provider)
+  .then(function(result) {
+    // User is signed in.
+    // IdP data available in result.additionalUserInfo.profile.
+    // Yahoo OAuth access token can be retrieved by calling:
+    // result.credential.accessToken
+    // Yahoo OAuth ID token can be retrieved by calling:
+    // result.credential.idToken
+    window.location.assign(`/profilepage.html`);
+  })
+  .catch(function(error) {
+    // Handle error.
+    console.log(error);
+    if(error.message === 'An account already exists with the same email address but different sign-in credentials. Sign in using a provider associated with this email address.')
+  {
+    alert('Email associated with this FaceBook is already Linked to another Account');
+  }
+  });
+}
+
+
+    //twitter 
+    function twitterAuth() {
+      var provider = new firebase.auth.TwitterAuthProvider();
+      firebase.auth().signInWithPopup(provider).then(function(result) {
+  // This gives you a the Twitter OAuth 1.0 Access Token and Secret.
+  // You can use these server side with your app's credentials to access the Twitter API.
+  var token = result.credential.accessToken;
+  var secret = result.credential.secret;
+  // The signed-in user info.
+  var user = result.user;
+  window.location.assign(`/profilepage.html`);
+  // ...
+}).catch(function(error) {
+  // Handle Errors here.
+  if(error.message === 'An account already exists with the same email address but different sign-in credentials. Sign in using a provider associated with this email address.')
+  {
+    alert('Email associated with this FaceBook is already Linked to another Account');
+  }
+  var errorCode = error.code;
+  var errorMessage = error.message;
+  console.log(error.message);
+  
+  // The email of the user's account used.
+  var email = error.email;
+  // The firebase.auth.AuthCredential type that was used.
+  var credential = error.credential;
+  // ...
+});
+    }
+
+    //email signup
+
+    async function EmailSignUp() {
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      firebase.auth().createUserWithEmailAndPassword(email, password).then(doc => {
+        console.log(doc);
+        window.location.assign('/verificationpage.html?link=0');
+      }).catch(function(error) {
+  // Handle Errors here.
+  var errorCode = error.code;
+  var errorMessage = error.message;
+  console.log(error);
+  if(error.message === 'The email address is already in use by another account.')
+  {
+    alert("The email address is already in use by another account");
+  }
+ 
+  
+  // ...
+});
+
+// 
+    }
+
+
+    //email login
+
+   async function EmailLogin() {
+    const email = document.getElementById('lemail').value;
+      const password = document.getElementById('lpassword').value;
+       firebase.auth().signInWithEmailAndPassword(email, password).then(doc=>{
+        firebase.auth().onAuthStateChanged(function(user) {
+  if (user) {
+    // User is signed in.
+    console.log(user);
+    alert("Signed In");
+    if(user.emailVerified === false){window.location.assign('/verificationpage.html?link=0')}
+    else{window.location.assign('/profilepage.html')}
+    
+  } else {
+    // No user is signed in.
+    console.log("no user");
+  }
+});
+      }).catch(function(error) {
+  // Handle Errors here.
+  var errorCode = error.code;
+  var errorMessage = error.message;
+  
+  console.log(error);
+  if(error.message === 'The password is invalid or the user does not have a password.')
+  {
+    alert("Wrong Password")
+  }
+  else{
+    alert("SignUp First");
+}
+  // ...
+});
+
+    }
+
+
+//Goodle signIn
+    function googleAuth() {
+      var provider = new firebase.auth.GoogleAuthProvider();
+      firebase.auth().signInWithPopup(provider).then(function (result) {
+        // This gives you a Google Access Token. You can use it to access the Google API.
+        var token = result.credential.accessToken;
+        console.log(token);
+        // The signed-in user info.
+        var user = result.user;
+        window.location.assign(`/profilepage.html`);
+        // ...
+      }).catch(function (error) {
+        // Handle Errors here.
+        var errorCode = error.code;
+        var errorMessage = error.message;
+        // The email of the user's account used.
+        var email = error.email;
+        // The firebase.auth.AuthCredential type that was used.
+        var credential = error.credential;
+        console.log(error);
+        // ...
+      });
+
+    }
+//FaceBook signIn
+    function facebookAuth() {
+      var provider = new firebase.auth.FacebookAuthProvider();
+      firebase.auth().signInWithPopup(provider).then(function(result) {
+  // This gives you a Facebook Access Token. You can use it to access the Facebook API.
+  var token = result.credential.accessToken;
+  // The signed-in user info.
+  var user = result.user;
+ 
+  window.location.assign(`/profilepage.html?`);
+  // ...
+}).catch(function(error) {
+  if(error.message === 'An account already exists with the same email address but different sign-in credentials. Sign in using a provider associated with this email address.')
+  {
+    alert('Email associated with this FaceBook is already Linked to another Account');
+  }
+  // Handle Errors here.
+  var errorCode = error.code;
+  var errorMessage = error.message;
+  // The email of the user's account used.
+  var email = error.email;
+  // The firebase.auth.AuthCredential type that was used.
+  var credential = error.credential;
+  console.log(error);
+  // ...
+});
+    }
+
+
+    function githubAuth() {
+      var provider = new firebase.auth.GithubAuthProvider();
+      firebase.auth().signInWithPopup(provider).then(function(result) {
+  // This gives you a GitHub Access Token. You can use it to access the GitHub API.
+  var token = result.credential.accessToken;
+  // The signed-in user info.
+  var user = result.user;
+  console.log(user);
+  window.location.assign(`/profilepage.html`);
+  // ...
+}).catch(function(error) {
+  if(error.message === 'An account already exists with the same email address but different sign-in credentials. Sign in using a provider associated with this email address.')
+  {
+    alert('Email associated with this GitHub is already Linked to another Account');
+  }
+  // Handle Errors here.
+  var errorCode = error.code;
+  var errorMessage = error.message;
+  
+  // The email of the user's account used.
+  var email = error.email;
+  // The firebase.auth.AuthCredential type that was used.
+  var credential = error.credential;
+  // ...
+});
+    }
+
+  </script>
+</body>
+
+</html>
+

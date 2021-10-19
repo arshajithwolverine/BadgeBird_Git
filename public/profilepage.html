@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Welcome to Firebase Hosting</title>
+
+  <!-- update the version number as needed -->
+  <script defer src="/__/firebase/7.23.0/firebase-app.js"></script>
+  <!-- include only the Firebase features as you need -->
+  <script defer src="/__/firebase/7.23.0/firebase-auth.js"></script>
+  <script defer src="/__/firebase/7.23.0/firebase-database.js"></script>
+  <script defer src="/__/firebase/7.23.0/firebase-messaging.js"></script>
+  <script defer src="/__/firebase/7.23.0/firebase-storage.js"></script>
+  <script defer src="/__/firebase/7.23.0/firebase-firestore.js"></script>
+  <!-- initialize the SDK after all desired features are loaded -->
+  <script defer src="/__/firebase/init.js"></script>
+
+  <style media="screen">
+    body {
+      background: #ECEFF1;
+      color: rgba(0, 0, 0, 0.87);
+      font-family: Roboto, Helvetica, Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    #message {
+      background: white;
+      max-width: 360px;
+      margin: 100px auto 16px;
+      padding: 32px 24px;
+      border-radius: 3px;
+    }
+
+    #message h2 {
+      color: #ffa100;
+      font-weight: bold;
+      font-size: 16px;
+      margin: 0 0 8px;
+    }
+
+    #message h1 {
+      font-size: 22px;
+      font-weight: 300;
+      color: rgba(0, 0, 0, 0.6);
+      margin: 0 0 16px;
+    }
+
+    #message p {
+      line-height: 140%;
+      margin: 16px 0 24px;
+      font-size: 14px;
+    }
+
+    #message a {
+      display: block;
+      text-align: center;
+      background: #039be5;
+      text-transform: uppercase;
+      text-decoration: none;
+      color: white;
+      padding: 16px;
+      border-radius: 4px;
+    }
+
+    #message,
+    #message a {
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+    }
+
+    #load {
+      color: rgba(0, 0, 0, 0.4);
+      text-align: center;
+      font-size: 13px;
+    }
+
+    @media (max-width: 600px) {
+
+      body,
+      #message {
+        margin-top: 0;
+        background: white;
+        box-shadow: none;
+      }
+
+      body {
+        border-top: 16px solid #ffa100;
+      }
+    }
+  </style>
+</head>
+
+<body>
+    <div id="message">
+    <h2 id='name'></h2><br>
+    <h2>Add Account</h2>
+    <div id='auth'>
+    
+</div></div>
+  <script>
+    
+    document.addEventListener('DOMContentLoaded',async function () {
+      // // 🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥
+      // // The Firebase SDK is initialized and available here!
+      //
+      // firebase.auth().onAuthStateChanged(user => { });
+      // firebase.database().ref('/path/to/ref').on('value', snapshot => { });
+      // firebase.messaging().requestPermission().then(() => { });
+      // firebase.storage().ref('/path/to/ref').getDownloadURL().then(() => { });
+      //
+      // // 🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥
+
+      try {
+        let app = firebase.app();
+        let features = ['auth', 'database', 'messaging', 'storage'].filter(feature => typeof app[feature] === 'function');
+        
+      let flag=1;
+     
+      
+       await firebase.auth().onAuthStateChanged(async function (user) {
+          if(flag===1){
+          if (user) {
+            flag=2;
+            user.getIdToken(/* forceRefresh */ true).then(async function (idToken) {
+              //console.log(idToken);
+              console.log(user);
+              console.log(idToken);
+              document.getElementById('name').innerHTML="WLECOME: "+user.displayName;
+
+              const queryString = window.location.search;
+              const urlParams = new URLSearchParams(queryString);
+              const method = urlParams.get('method');
+         
+                document.getElementById('auth').innerHTML=`
+            <input type="button" value="Google" onclick=GoogleAuth('${user.uid}') ><br>
+            <input type="button" value="FaceBook" onclick=FacebookAuth('${user.uid}') ><br>
+            Email:<input type="text" id="email"><br>Password:<input type="password" id="password"><br>
+            <input type="button" value="Add" onclick=EmailAuth('${user.uid}') >
+              `;
+             
+           
+                
+                // var twitterProvider = new firebase.auth.TwitterAuthProvider();
+                // var githubProvider = new firebase.auth.GithubAuthProvider();
+
+
+
+
+                
+              // ...
+            }).catch(function (error) {
+              // Handle error
+            });
+          } else {
+            console.log('test');
+          }}
+        });
+
+
+
+
+
+
+      } catch (e) {
+        console.error(e);
+        
+      }
+    });
+    
+
+   //add google
+    function GoogleAuth(admin) {
+      console.log("admin: "+admin)
+      var provider = new firebase.auth.GoogleAuthProvider();
+      firebase.auth().signInWithPopup(provider).then(async function(result) {
+  // This gives you a Google Access Token. You can use it to access the Google API.
+  var token = result.credential.accessToken;
+  // The signed-in user info.
+  var user = result.user;
+  console.log(user.uid);
+  let app = firebase.app();
+  var db = firebase.firestore(app);
+  if(admin === user.uid){
+    alert("You are Trying to Link Same Email linked with this account");
+    return;
+  }
+  else{
+  const usercheck = await db.collection('user').where('linkedAcc','array-contains',user.uid).get();
+  
+  if (usercheck.empty) {
+
+            //
+            //fetcch api: https://us-central1-openbadges-c7d08.cloudfunctions.net/userSide/AddAccount
+            //req.body{
+            //   token : "",
+            //   adminId : admin,
+            //   userId : user.uid 
+            // }
+            //res.json({"message" : "Account linked"})
+            //
+            //{{{ dont use code inside,use api
+            
+            const mainacc = await db.collection('user').where('linkedAcc','array-contains',admin).get();
+            let linkedAcc = mainacc.docs[0].data().linkedAcc;
+            linkedAcc.push(user.uid);
+            await db.collection('user').doc(mainacc.docs[0].id).update({
+              linkedAcc : linkedAcc,
+              [user.uid] : true
+            })
+
+            //}}}
+            alert('Account Linked');
+            return;
+        }
+        else{
+          alert("This Account is Already Linked To another account");
+          alert("Violation Of terms and policy : Please Re-Authenticate");
+          firebase.auth().signOut().then(function() {
+            window.location.assign(`/index.html`);
+  
+}).catch(function(error) {
+  // An error happened.
+  console.log(error);
+});
+        }
+      }
+
+  // ...
+}).catch(function(error) {
+  console.log(error);
+  // Handle Errors here.
+  var errorCode = error.code;
+  var errorMessage = error.message;
+  // The email of the user's account used.
+  var email = error.email;
+  // The firebase.auth.AuthCredential type that was used.
+  var credential = error.credential;
+  // ...
+});
+
+}
+
+
+function FacebookAuth(admin) {
+  var provider = new firebase.auth.FacebookAuthProvider();
+
+  firebase.auth().signInWithPopup(provider).then(async function(result) {
+  // This gives you a Facebook Access Token. You can use it to access the Facebook API.
+  var token = result.credential.accessToken;
+  // The signed-in user info.
+  var user = result.user;
+  console.log(user.uid);
+  let app = firebase.app();
+  var db = firebase.firestore(app);
+  if(admin === user.uid){
+    alert("You are Trying to Link Same Email linked with this account");
+    return;
+  }
+  else{
+  const usercheck = await db.collection('user').where('linkedAcc','array-contains',user.uid).get();
+  
+  if (usercheck.empty) {
+            
+            //
+            //fetcch api: https://us-central1-openbadges-c7d08.cloudfunctions.net/userSide/AddAccount
+            //req.body{
+            //   token : "",
+            //   adminId : admin,
+            //   userId : user.uid 
+            // }
+            //res.json({"message" : "Account linked"})
+            //
+            //{{{dont use code inside,use api
+
+            const mainacc = await db.collection('user').where('linkedAcc','array-contains',admin).get();
+            let linkedAcc = mainacc.docs[0].data().linkedAcc;
+            linkedAcc.push(user.uid);
+            await db.collection('user').doc(mainacc.docs[0].id).update({
+              linkedAcc : linkedAcc,
+              [user.uid] : true
+            })
+            
+            alert('Account Linked');
+            //}}}
+            return;
+        }
+        else{
+          alert("This Account is Already Linked To another account");
+          alert("Violation Of terms and policy : Please Re-Authenticate");
+          firebase.auth().signOut().then(function() {
+            window.location.assign(`/index.html`);
+  
+}).catch(function(error) {
+  // An error happened.
+  console.log(error);
+});
+        }
+      }
+
+  // ...
+}).catch(function(error) {
+  console.log(error.message);
+  if(error.message === 'An account already exists with the same email address but different sign-in credentials. Sign in using a provider associated with this email address.')
+  {
+    alert('Email associated with this FaceBook already Linked to another Account');
+    alert("Violation Of terms and policy : Please Re-Authenticate");
+          firebase.auth().signOut().then(function() {
+            window.location.assign(`/index.html`);
+  
+}).catch(function(error) {
+  // An error happened.
+  console.log(error);
+});
+  }
+  // Handle Errors here.
+  var errorCode = error.code;
+  var errorMessage = error.message;
+  // The email of the user's account used.
+  var email = error.email;
+  // The firebase.auth.AuthCredential type that was used.
+  var credential = error.credential;
+  // ...
+});
+
+}
+
+function EmailAuth(admin) {
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+
+      firebase.auth().createUserWithEmailAndPassword(email, password).then(doc => {
+        console.log(doc);
+        window.location.assign(`/verificationpage.html?link=1&admin=${admin}`);
+      }).catch(function(error) {
+  // Handle Errors here.
+  var errorCode = error.code;
+  var errorMessage = error.message;
+  console.log(error);
+  if(error.message === 'The email address is already in use by another account.')
+  {
+    alert('Email already Linked to another Account');
+    alert("Violation Of terms and policy : Please Re-Authenticate");
+          firebase.auth().signOut().then(function() {
+            window.location.assign(`/index.html`);
+  
+}).catch(function(error) {
+  // An error happened.
+  console.log(error);
+});
+  }
+ 
+  
+  // ...
+
+});
+}
+    
+
+  </script>
+</body>
+
+</html>
+

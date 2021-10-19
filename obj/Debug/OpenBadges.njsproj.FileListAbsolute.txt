@@ -1,0 +1,3 @@
+D:\Projects\OpenBadges\obj\Debug\OpenBadges.njsprojAssemblyReference.cache
+D:\Projects\OpenBadges\obj\Debug\OpenBadges.njsproj.CoreCompileInputs.cache
+D:\Projects\OpenBadges\bin\Microsoft.NodejsTools.WebRole.dll

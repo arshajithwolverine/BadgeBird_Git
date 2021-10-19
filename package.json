@@ -1,0 +1,11 @@
+{
+  "name": "OpenBadges",
+  "version": "0.0.0",
+  "description": "OpenBadges",
+  "author": {
+    "name": ""
+  },
+  "dependencies": {
+    "firebase-admin": "^9.11.1"
+  }
+}
